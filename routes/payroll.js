@@ -1,57 +1,65 @@
 const express = require('express');
 const router = express.Router();
 
+// Règle 1: Calcul des heures supplémentaires
+function calculateOvertimePay(heuresSup, tauxHoraire) {
+  if (heuresSup <= 10) return 0;
+  return (heuresSup - 10) * tauxHoraire * 1.5;
+}
+
+// Règle 2: Calcul des déductions pour absences
+function calculateAbsenceDeduction(salaireBase, joursAbsence) {
+  if (joursAbsence <= 2) return 0;
+  return salaireBase * 0.05 * joursAbsence;
+}
+
+// Règle 3: Prime manager
+function calculateManagerBonus(grade) {
+  if (grade !== 'Manager') return 0;
+  return 500;
+}
+
+// Règle 4: Bonus performance
+function calculatePerformanceBonus(salaireBase, objectifsAtteints, ancienneteMois) {
+  if (!objectifsAtteints) return 0;
+  if (ancienneteMois < 12) return 0;
+  return salaireBase * 0.1;
+}
+
+// Fonction principale de calcul du salaire
 function calculatePayroll(data) {
-  let salaireBase = data.salaire_base;
-  let heuresSup = data.heures_sup;
-  let joursAbsence = data.jours_absence;
-  let grade = data.grade;
-  let objectifs = data.objectifs;
-  let ancienneteMois = data.anciennete_mois;
+  const {
+    salaire_base,
+    heures_sup = 0,
+    jours_absence = 0,
+    grade = 'Employee',
+    objectifs = false,
+    anciennete_mois = 0
+  } = data;
 
-  let tauxHoraire = salaireBase / 160;
-  let heuresSupMontant = 0;
-  let deductionAbsence = 0;
-  let primeManager = 0;
-  let bonusPerformance = 0;
+  const tauxHoraire = salaire_base / 160;
 
-  // Règle 1 : Heures supplémentaires
-  if (heuresSup > 10) {
-    heuresSupMontant = (heuresSup - 10) * tauxHoraire * 1.5;
-  }
+  const heuresSupMontant = calculateOvertimePay(heures_sup, tauxHoraire);
+  const deductionAbsence = calculateAbsenceDeduction(salaire_base, jours_absence);
+  const primeManager = calculateManagerBonus(grade);
+  const bonusPerformance = calculatePerformanceBonus(salaire_base, objectifs, anciennete_mois);
 
-  // Règle 2 : Absences
-  if (joursAbsence > 2) {
-    deductionAbsence = salaireBase * 0.05 * joursAbsence;
-  }
-
-  // Règle 3 : Prime Manager
-  if (grade === 'Manager') {
-    primeManager = 500;
-  }
-
-  // Règle 4 : Bonus objectifs
-  if (objectifs === true) {
-    if (ancienneteMois >= 12) {
-      bonusPerformance = salaireBase * 0.1;
-    }
-  }
-
-  let salaireFinal = salaireBase + heuresSupMontant - deductionAbsence + primeManager + bonusPerformance;
+  const salaireFinal = salaire_base + heuresSupMontant - deductionAbsence + primeManager + bonusPerformance;
 
   return {
-    salaire_base: salaireBase,
-    salaire_final: salaireFinal,
+    salaire_base,
+    salaire_final: parseFloat(salaireFinal.toFixed(2)),
     details: {
-      heures_sup_montant: heuresSupMontant,
-      deduction_absence: deductionAbsence,
+      heures_sup_montant: parseFloat(heuresSupMontant.toFixed(2)),
+      deduction_absence: parseFloat(deductionAbsence.toFixed(2)),
       prime_manager: primeManager,
-      bonus_performance: bonusPerformance,
-      taux_horaire_calcule: tauxHoraire
+      bonus_performance: parseFloat(bonusPerformance.toFixed(2)),
+      taux_horaire_calcule: parseFloat(tauxHoraire.toFixed(2))
     }
   };
 }
 
+// Route API
 router.post('/calculate-payroll', (req, res) => {
   try {
     const result = calculatePayroll(req.body);
@@ -62,3 +70,4 @@ router.post('/calculate-payroll', (req, res) => {
 });
 
 module.exports = router;
+module.exports.calculatePayroll = calculatePayroll;

@@ -22,6 +22,7 @@ jobs:
             -Dsonar.projectKey=Fanantenana-ds_smartrh-api
             -Dsonar.organization=fanantenana-ds
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.scanner.skipAutomaticAnalysis=true
             -Dsonar.scanner.skipJreProvisioning=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

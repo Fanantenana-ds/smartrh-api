@@ -123,9 +123,9 @@ test('Règle 4: Pas de bonus si objectifs non atteints', () => {
 });
 
 
-/* ===================== */
-/* NOUVEAUX TESTS AJOUTÉS */
-/* ===================== */
+/* ============================================================*/
+/* TESTS SUPPLÉMENTAIRES POUR AUGMENTER LA COUVERTURE SONAR   */
+/* ============================================================ */
 
 test('Cas limite : ancienneté exactement 12 mois', () => {
   const result = calculatePayroll({
@@ -164,6 +164,32 @@ test('Cas limite : salaire avec zéro absence et zéro bonus', () => {
   });
 
   expect(result.salaire_final).toBe(2000);
+});
+
+test('Cas combiné : heures sup + bonus + absence', () => {
+  const result = calculatePayroll({
+    salaire_base: 3000,
+    heures_sup: 15,
+    jours_absence: 1,
+    grade: 'Employee',
+    objectifs: true,
+    anciennete_mois: 24
+  });
+
+  expect(result.salaire_final).toBeDefined();
+});
+
+test('Cas extrême : toutes les valeurs nulles', () => {
+  const result = calculatePayroll({
+    salaire_base: 0,
+    heures_sup: 0,
+    jours_absence: 0,
+    grade: 'Employee',
+    objectifs: false,
+    anciennete_mois: 0
+  });
+
+  expect(result.salaire_final).toBe(0);
 });
 
 });

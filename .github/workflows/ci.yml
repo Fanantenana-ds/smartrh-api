@@ -14,7 +14,7 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run lint
-      - run: npm test
+      - run: npm test -- --coverage --collectCoverageFrom='routes/*.js'
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
@@ -22,5 +22,6 @@ jobs:
             -Dsonar.projectKey=Fanantenana-ds_smartrh-api
             -Dsonar.organization=fanantenana-ds
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.coverage.exclusions=**/*.test.js
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

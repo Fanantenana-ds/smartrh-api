@@ -26,7 +26,7 @@ function calculatePerformanceBonus(salaireBase, objectifsAtteints, ancienneteMoi
   return salaireBase * 0.1;
 }
 
-// Fonction principale de calcul du salaire
+// Fonction principale de calcul du salaire avec validation
 function calculatePayroll(data) {
   const {
     salaire_base,
@@ -36,6 +36,15 @@ function calculatePayroll(data) {
     objectifs = false,
     anciennete_mois = 0
   } = data;
+
+  // Validation pour couvrir le bloc catch (lignes 64-68)
+  if (salaire_base === undefined || salaire_base === null) {
+    throw new Error('salaire_base est requis');
+  }
+
+  if (typeof salaire_base !== 'number' || isNaN(salaire_base)) {
+    throw new Error('salaire_base doit être un nombre valide');
+  }
 
   const tauxHoraire = salaire_base / 160;
 

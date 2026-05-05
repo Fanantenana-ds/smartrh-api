@@ -20,7 +20,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 1: Heures sup > 10', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 12,
       jours_absence: 0,
       grade: 'Employee',
@@ -32,7 +32,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 1: Heures sup <= 10 (pas de majoration)', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 5,
       jours_absence: 0,
       grade: 'Employee',
@@ -44,7 +44,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 2: Absences > 2 jours', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 4,
       grade: 'Employee',
@@ -56,7 +56,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 2: Absences <= 2 jours (pas de déduction)', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 2,
       grade: 'Employee',
@@ -68,7 +68,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 3: Prime Manager', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Manager',
@@ -80,7 +80,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 3: Pas de prime pour les non-managers', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -92,7 +92,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 4: Bonus objectifs + ancienneté >= 1 an', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -104,7 +104,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 4: Pas de bonus si ancienneté < 1 an', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -116,7 +116,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 4: Pas de bonus si objectifs non atteints', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -132,7 +132,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Cas limite : ancienneté exactement 12 mois', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -144,7 +144,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Cas limite : exactement 10 heures supplémentaires', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 10,
       jours_absence: 0,
       grade: 'Employee',
@@ -156,7 +156,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Cas limite : salaire avec zéro absence et zéro bonus', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',

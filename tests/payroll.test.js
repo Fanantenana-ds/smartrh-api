@@ -104,7 +104,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 4: Pas de bonus si ancienneté < 1 an', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -116,7 +116,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Règle 4: Pas de bonus si objectifs non atteints', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',
@@ -132,7 +132,7 @@ describe('SmartHR Payroll Tests', () => {
 
   test('Cas limite : ancienneté exactement 12 mois', () => {
     const result = calculatePayroll({
-      salaire_base: 2000,
+      salaire_base: 2500,
       heures_sup: 0,
       jours_absence: 0,
       grade: 'Employee',

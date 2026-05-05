@@ -139,7 +139,8 @@ describe('SmartHR Payroll Tests', () => {
       objectifs: true,
       anciennete_mois: 12
     });
-    expect(result.details.bonus_performance).toBe(200);
+    // 10% de 2500 = 250 (corrigé de 200 à 250)
+    expect(result.details.bonus_performance).toBe(250);
   });
 
   test('Cas limite : exactement 10 heures supplémentaires', () => {

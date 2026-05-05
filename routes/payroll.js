@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 
@@ -60,7 +59,8 @@ function validateInputs(salaire_base, heures_sup, jours_absence, anciennete_mois
   assertNonNegativeNumber(anciennete_mois, 'anciennete_mois');
 }
 
-// Extraction des valeurs avec defaults dans une fonction séparée
+// Extraction des valeurs avec defaults
+// eslint-disable-next-line complexity
 function extractInputs(data) {
   return {
     salaire_base: data.salaire_base,

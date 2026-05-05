@@ -26,7 +26,20 @@ function calculatePerformanceBonus(salaireBase, objectifsAtteints, ancienneteMoi
   return salaireBase * 0.1;
 }
 
-// Fonction principale de calcul du salaire avec validation
+function validateNumberParam(value, name) {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    throw new Error(`${name} doit être un nombre valide`);
+  }
+  return value;
+}
+
+function assertRequiredNumber(value, name) {
+  if (value === undefined || value === null) {
+    throw new Error(`${name} est requis`);
+  }
+  return validateNumberParam(value, name);
+}
+
 function calculatePayroll(data) {
   const {
     salaire_base,
@@ -37,38 +50,42 @@ function calculatePayroll(data) {
     anciennete_mois = 0
   } = data;
 
-  // Validation pour couvrir le bloc catch (lignes 64-68)
-  if (salaire_base === undefined || salaire_base === null) {
-    throw new Error('salaire_base est requis');
-  }
-
-  if (typeof salaire_base !== 'number' || isNaN(salaire_base)) {
-    throw new Error('salaire_base doit être un nombre valide');
-  }
+  assertRequiredNumber(salaire_base, 'salaire_base');
+  validateNumberParam(heures_sup, 'heures_sup');
+  validateNumberParam(jours_absence, 'jours_absence');
 
   const tauxHoraire = salaire_base / 160;
 
   const heuresSupMontant = calculateOvertimePay(heures_sup, tauxHoraire);
   const deductionAbsence = calculateAbsenceDeduction(salaire_base, jours_absence);
   const primeManager = calculateManagerBonus(grade);
-  const bonusPerformance = calculatePerformanceBonus(salaire_base, objectifs, anciennete_mois);
+  const bonusPerformance = calculatePerformanceBonus(
+    salaire_base,
+    objectifs,
+    anciennete_mois
+  );
 
-  const salaireFinal = salaire_base + heuresSupMontant - deductionAbsence + primeManager + bonusPerformance;
+  const salaireFinal =
+    salaire_base +
+    heuresSupMontant -
+    deductionAbsence +
+    primeManager +
+    bonusPerformance;
 
   return {
     salaire_base,
-    salaire_final: parseFloat(salaireFinal.toFixed(2)),
+    salaire_final: Number.parseFloat(salaireFinal.toFixed(2)),
     details: {
-      heures_sup_montant: parseFloat(heuresSupMontant.toFixed(2)),
-      deduction_absence: parseFloat(deductionAbsence.toFixed(2)),
+      heures_sup_montant: Number.parseFloat(heuresSupMontant.toFixed(2)),
+      deduction_absence: Number.parseFloat(deductionAbsence.toFixed(2)),
       prime_manager: primeManager,
-      bonus_performance: parseFloat(bonusPerformance.toFixed(2)),
-      taux_horaire_calcule: parseFloat(tauxHoraire.toFixed(2))
+      bonus_performance: Number.parseFloat(bonusPerformance.toFixed(2)),
+      taux_horaire_calcule: Number.parseFloat(tauxHoraire.toFixed(2))
     }
   };
 }
 
-// Route API
+// Route API 
 router.post('/calculate-payroll', (req, res) => {
   try {
     const result = calculatePayroll(req.body);

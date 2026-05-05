@@ -299,3 +299,67 @@ test('Route API POST /api/calculate-payroll - erreur (salaire_base manquant)', a
   expect(response.status).toBe(400);
   expect(response.body.error).toBeDefined();
 });
+// ============================================================
+// TESTS POUR AUGMENTER LA COUVERTURE À 80%+
+// ============================================================
+
+test('Cas limite : heures sup négatives (doit être traité comme 0)', () => {
+  const result = calculatePayroll({
+    salaire_base: 2000,
+    heures_sup: -5,
+    jours_absence: 0,
+    grade: 'Employee',
+    objectifs: false,
+    anciennete_mois: 18
+  });
+  expect(result.details.heures_sup_montant).toBe(0);
+});
+
+test('Cas limite : absences négatives', () => {
+  const result = calculatePayroll({
+    salaire_base: 2000,
+    heures_sup: 0,
+    jours_absence: -2,
+    grade: 'Employee',
+    objectifs: false,
+    anciennete_mois: 18
+  });
+  expect(result.details.deduction_absence).toBe(0);
+});
+
+test('Cas limite : grade inconnu (ni Manager ni Employee)', () => {
+  const result = calculatePayroll({
+    salaire_base: 2000,
+    heures_sup: 0,
+    jours_absence: 0,
+    grade: 'Directeur',
+    objectifs: false,
+    anciennete_mois: 18
+  });
+  expect(result.details.prime_manager).toBe(0);
+});
+
+test('Cas limite : objectifs = undefined', () => {
+  const result = calculatePayroll({
+    salaire_base: 2000,
+    heures_sup: 0,
+    jours_absence: 0,
+    grade: 'Employee',
+    objectifs: undefined,
+    anciennete_mois: 18
+  });
+  expect(result.details.bonus_performance).toBe(0);
+});
+
+test('Cas limite : salaire_base très grand', () => {
+  const result = calculatePayroll({
+    salaire_base: 100000,
+    heures_sup: 20,
+    jours_absence: 1,
+    grade: 'Manager',
+    objectifs: true,
+    anciennete_mois: 24
+  });
+  expect(result.salaire_final).toBeDefined();
+  expect(result.salaire_final).toBeGreaterThan(100000);
+});

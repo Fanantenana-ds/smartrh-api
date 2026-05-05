@@ -26,20 +26,31 @@ function calculatePerformanceBonus(salaireBase, objectifsAtteints, ancienneteMoi
   return salaireBase * 0.1;
 }
 
+// Validation d'un nombre (lance TypeError)
 function validateNumberParam(value, name) {
   if (typeof value !== 'number' || Number.isNaN(value)) {
-    throw new Error(`${name} doit être un nombre valide`);
+    throw new TypeError(`${name} doit être un nombre valide`);
   }
   return value;
 }
 
+// Validation d'un nombre requis (lance TypeError)
 function assertRequiredNumber(value, name) {
   if (value === undefined || value === null) {
-    throw new Error(`${name} est requis`);
+    throw new TypeError(`${name} est requis`);
   }
   return validateNumberParam(value, name);
 }
 
+// Validation d'un nombre non négatif (lance TypeError)
+function assertNonNegativeNumber(value, name) {
+  if (value < 0) {
+    throw new TypeError(`${name} ne peut pas être négatif`);
+  }
+  return value;
+}
+
+// Fonction principale de calcul du salaire avec validation
 function calculatePayroll(data) {
   const {
     salaire_base,
@@ -50,27 +61,21 @@ function calculatePayroll(data) {
     anciennete_mois = 0
   } = data;
 
+  // Validations avec TypeError
   assertRequiredNumber(salaire_base, 'salaire_base');
-  validateNumberParam(heures_sup, 'heures_sup');
-  validateNumberParam(jours_absence, 'jours_absence');
+  assertNonNegativeNumber(salaire_base, 'salaire_base');
+  assertNonNegativeNumber(heures_sup, 'heures_sup');
+  assertNonNegativeNumber(jours_absence, 'jours_absence');
+  assertNonNegativeNumber(anciennete_mois, 'anciennete_mois');
 
   const tauxHoraire = salaire_base / 160;
 
   const heuresSupMontant = calculateOvertimePay(heures_sup, tauxHoraire);
   const deductionAbsence = calculateAbsenceDeduction(salaire_base, jours_absence);
   const primeManager = calculateManagerBonus(grade);
-  const bonusPerformance = calculatePerformanceBonus(
-    salaire_base,
-    objectifs,
-    anciennete_mois
-  );
+  const bonusPerformance = calculatePerformanceBonus(salaire_base, objectifs, anciennete_mois);
 
-  const salaireFinal =
-    salaire_base +
-    heuresSupMontant -
-    deductionAbsence +
-    primeManager +
-    bonusPerformance;
+  const salaireFinal = salaire_base + heuresSupMontant - deductionAbsence + primeManager + bonusPerformance;
 
   return {
     salaire_base,
@@ -91,7 +96,12 @@ router.post('/calculate-payroll', (req, res) => {
     const result = calculatePayroll(req.body);
     res.json(result);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    // Vérification du type d'erreur
+    if (error instanceof TypeError) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
   }
 });
 

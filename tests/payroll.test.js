@@ -212,7 +212,7 @@ describe('SmartHR Payroll Tests', () => {
       calculatePayroll({
         salaire_base: null,
         heures_sup: 12,
-        jours_absence: 3,
+        jours_absence: 2,
         grade: 'Manager',
         objectifs: true,
         anciennete_mois: 18
@@ -225,7 +225,7 @@ describe('SmartHR Payroll Tests', () => {
       calculatePayroll({
         salaire_base: undefined,
         heures_sup: 12,
-        jours_absence: 3,
+        jours_absence: 4,
         grade: 'Manager',
         objectifs: true,
         anciennete_mois: 18

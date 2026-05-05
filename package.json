@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "lint": "npx eslint .",
+    "lint": "eslint .",
     "test": "jest --coverage"
   },
   "keywords": [],

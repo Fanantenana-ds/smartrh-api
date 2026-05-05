@@ -1,19 +1,21 @@
-const globals = require("globals");
+const globals = require('globals');
 
 module.exports = [
   {
-    files: ["**/*.js"],
+    files: ['**/*.js'],
+    ignores: ['node_modules/**', 'coverage/**', 'tests/**'],
     languageOptions: {
-      sourceType: "commonjs",
+      sourceType: 'commonjs',
+      ecmaVersion: 2022,
       globals: {
         ...globals.node,
         ...globals.jest,
       },
     },
     rules: {
-      "complexity": ["error", 10],
-      "no-unused-vars": "warn",
-      "no-console": "off",
+      'complexity': ['error', 5],
+      'no-unused-vars': 'warn',
+      'no-console': 'off',
     },
   },
 ];

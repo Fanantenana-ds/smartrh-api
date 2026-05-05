@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 
@@ -50,26 +51,34 @@ function assertNonNegativeNumber(value, name) {
   return value;
 }
 
-// Fonction principale de calcul du salaire avec validation
-function calculatePayroll(data) {
-  const {
-    salaire_base,
-    heures_sup = 0,
-    jours_absence = 0,
-    grade = 'Employee',
-    objectifs = false,
-    anciennete_mois = 0
-  } = data;
-
-  // Validations avec TypeError
+// Validation complète des entrées
+function validateInputs(salaire_base, heures_sup, jours_absence, anciennete_mois) {
   assertRequiredNumber(salaire_base, 'salaire_base');
   assertNonNegativeNumber(salaire_base, 'salaire_base');
   assertNonNegativeNumber(heures_sup, 'heures_sup');
   assertNonNegativeNumber(jours_absence, 'jours_absence');
   assertNonNegativeNumber(anciennete_mois, 'anciennete_mois');
+}
+
+// Extraction des valeurs avec defaults dans une fonction séparée
+function extractInputs(data) {
+  return {
+    salaire_base: data.salaire_base,
+    heures_sup: data.heures_sup !== undefined ? data.heures_sup : 0,
+    jours_absence: data.jours_absence !== undefined ? data.jours_absence : 0,
+    grade: data.grade !== undefined ? data.grade : 'Employee',
+    objectifs: data.objectifs !== undefined ? data.objectifs : false,
+    anciennete_mois: data.anciennete_mois !== undefined ? data.anciennete_mois : 0
+  };
+}
+
+// Fonction principale (complexité réduite à 1)
+function calculatePayroll(data) {
+  const { salaire_base, heures_sup, jours_absence, grade, objectifs, anciennete_mois } = extractInputs(data);
+
+  validateInputs(salaire_base, heures_sup, jours_absence, anciennete_mois);
 
   const tauxHoraire = salaire_base / 160;
-
   const heuresSupMontant = calculateOvertimePay(heures_sup, tauxHoraire);
   const deductionAbsence = calculateAbsenceDeduction(salaire_base, jours_absence);
   const primeManager = calculateManagerBonus(grade);
@@ -96,7 +105,6 @@ router.post('/calculate-payroll', (req, res) => {
     const result = calculatePayroll(req.body);
     res.json(result);
   } catch (error) {
-    // Vérification du type d'erreur
     if (error instanceof TypeError) {
       res.status(400).json({ error: error.message });
     } else {

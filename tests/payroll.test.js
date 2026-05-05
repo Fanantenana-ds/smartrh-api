@@ -233,7 +233,7 @@ describe('SmartHR Payroll Tests', () => {
       });
     }).toThrow('salaire_base est requis');
   });
-
+// test erreur
   test('Gestion erreur : salaire_base = NaN', () => {
     expect(() => {
       calculatePayroll({

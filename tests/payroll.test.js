@@ -260,3 +260,42 @@ describe('SmartHR Payroll Tests', () => {
     }).toThrow('salaire_base doit être un nombre valide');
   });
 });
+// ============================================================
+// TESTS POUR LA ROUTE API (couvre les lignes 73-77)
+// ============================================================
+
+const express = require('express');
+const request = require('supertest');
+const app = express();
+
+app.use(express.json());
+app.use('/api', require('../routes/payroll'));
+
+test('Route API POST /api/calculate-payroll - succès', async () => {
+  const response = await request(app)
+    .post('/api/calculate-payroll')
+    .send({
+      salaire_base: 2000,
+      heures_sup: 12,
+      jours_absence: 3,
+      grade: 'Manager',
+      objectifs: true,
+      anciennete_mois: 18
+    });
+  expect(response.status).toBe(200);
+  expect(response.body.salaire_final).toBe(2437.5);
+});
+
+test('Route API POST /api/calculate-payroll - erreur (salaire_base manquant)', async () => {
+  const response = await request(app)
+    .post('/api/calculate-payroll')
+    .send({
+      heures_sup: 12,
+      jours_absence: 3,
+      grade: 'Manager',
+      objectifs: true,
+      anciennete_mois: 18
+    });
+  expect(response.status).toBe(400);
+  expect(response.body.error).toBeDefined();
+});

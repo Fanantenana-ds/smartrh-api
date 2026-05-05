@@ -12,9 +12,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install --ignore-scripts --package-lock-only
-      - run: npm run lint
-      - run: npm test -- --coverage --collectCoverageFrom='routes/*.js'
+          cache: 'npm'
+      
+      - name: Install dependencies (force ESLint 8)
+        run: |
+          npm ci
+          
+      
+      - name: Run linter
+        run: npx eslint .
+      
+      - name: Run tests with coverage
+        run: npm test -- --coverage
+      
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
@@ -22,6 +32,5 @@ jobs:
             -Dsonar.projectKey=Fanantenana-ds_smartrh-api
             -Dsonar.organization=fanantenana-ds
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=**/*.test.js
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

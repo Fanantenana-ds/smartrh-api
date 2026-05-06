@@ -1,44 +1,3 @@
-# name: CI Quality Pipeline
-
-# on:
-#   push:
-#     branches: [ "main" ]
-
-# jobs:
-#   build-and-test:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
-      
-#       - uses: actions/setup-node@v4
-#         with:
-#           node-version: 20
-#           cache: 'npm'
-      
-#       - name: Install dependencies
-#         run: npm ci --ignore-scripts
-      
-#       - name: Run linter
-#         run: npm run lint
-      
-#       - name: Run tests with coverage
-#         run: npm test -- --coverage
-      
-#       - name: Clean Sonar cache
-#         run: rm -rf .scannerwork
-      
-#       - name: SonarCloud Scan
-#         uses: SonarSource/sonarcloud-github-action@v2
-#         with:
-#           args: >
-#             -Dsonar.projectKey=Fanantenana-ds_smartrh-api
-#             -Dsonar.organization=fanantenana-ds
-#             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-#         env:
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
 name: CI Quality Pipeline
 
 on:
@@ -49,7 +8,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@4a4bfb4e5a5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
@@ -58,11 +17,8 @@ jobs:
           node-version: 20
           cache: 'npm'
       
-      - name: Clean install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
-          npm install
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
       
       - name: Run linter
         run: npm run lint
@@ -70,13 +26,15 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage
       
+      - name: Clean Sonar cache
+        run: rm -rf .scannerwork
+      
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@f2c0b7b6dfe7b6b6a8e9c0d1e2f3a4b5c6d7e8f9
+        uses: SonarSource/sonarcloud-github-action@v2
         with:
           args: >
             -Dsonar.projectKey=Fanantenana-ds_smartrh-api
             -Dsonar.organization=fanantenana-ds
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.javascript.node.maxspace=4096
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -2,6 +2,7 @@ const express = require('express');
 const payrollRoutes = require('./routes/payroll');
 
 const app = express();
+app.disable('x-powered-by');
 const port = 3000;
 
 app.use(express.json());
